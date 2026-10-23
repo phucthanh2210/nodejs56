@@ -1,0 +1,273 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cybersoft Pinterest Clone API - Buổi 13",
+    "version": "1.0.0",
+    "description": "Tài liệu API hoàn chỉnh cho bài tập Buổi 13 khóa NodeJS CyberSoft. Bao gồm đầy đủ các API Đăng ký, Đăng nhập, Trang chủ, Trang chi tiết, Trang quản lý và các tính năng mở rộng."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Nhập token JWT nhận được sau khi đăng nhập (không cần chữ Bearer phía trước trong ô nhập)"
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Auth (Xác thực)"],
+        "summary": "POST Trang đăng ký tài khoản",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "mat_khau", "ho_ten"],
+                "properties": {
+                  "email": { "type": "string", "example": "test@gmail.com" },
+                  "mat_khau": { "type": "string", "example": "1234" },
+                  "ho_ten": { "type": "string", "example": "Nguyễn Văn A" },
+                  "tuoi": { "type": "integer", "example": 22 },
+                  "anh_dai_dien": { "type": "string", "example": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Đăng ký thành công" },
+          "400": { "description": "Email đã tồn tại hoặc thiếu dữ liệu" }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth (Xác thực)"],
+        "summary": "POST Trang đăng nhập tài khoản",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "mat_khau"],
+                "properties": {
+                  "email": { "type": "string", "example": "phucthanh@gmail.com" },
+                  "mat_khau": { "type": "string", "example": "1234" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Đăng nhập thành công, trả về JWT token" },
+          "400": { "description": "Sai email hoặc mật khẩu" }
+        }
+      }
+    },
+    "/api/images": {
+      "get": {
+        "tags": ["Trang chủ & Hình ảnh"],
+        "summary": "GET Danh sách ảnh về (Trang chủ)",
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" }, "description": "Số trang (phân trang tùy chọn)" },
+          { "name": "size", "in": "query", "schema": { "type": "integer" }, "description": "Số lượng mỗi trang" }
+        ],
+        "responses": {
+          "200": { "description": "Lấy danh sách ảnh thành công" }
+        }
+      },
+      "post": {
+        "tags": ["Trang chủ & Hình ảnh"],
+        "summary": "POST Thêm / Upload hình ảnh mới (Mở rộng)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ten_hinh", "duong_dan"],
+                "properties": {
+                  "ten_hinh": { "type": "string", "example": "Hoàng hôn lãng mạn" },
+                  "duong_dan": { "type": "string", "example": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800" },
+                  "mo_ta": { "type": "string", "example": "Cảnh hoàng hôn tuyệt đẹp trên biển" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Tạo hình ảnh thành công" }
+        }
+      }
+    },
+    "/api/images/search": {
+      "get": {
+        "tags": ["Trang chủ & Hình ảnh"],
+        "summary": "GET Tìm kiếm danh sách ảnh theo tên (Trang chủ)",
+        "parameters": [
+          { "name": "ten", "in": "query", "schema": { "type": "string" }, "description": "Tên hình ảnh cần tìm" }
+        ],
+        "responses": {
+          "200": { "description": "Trả về danh sách kết quả tìm kiếm" }
+        }
+      }
+    },
+    "/api/images/{id}": {
+      "get": {
+        "tags": ["Trang chi tiết"],
+        "summary": "GET Thông tin ảnh và người tạo ảnh bằng ID ảnh (Trang chi tiết)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID hình ảnh" }
+        ],
+        "responses": {
+          "200": { "description": "Lấy thông tin ảnh thành công" },
+          "404": { "description": "Không tìm thấy ảnh" }
+        }
+      },
+      "delete": {
+        "tags": ["Trang quản lý ảnh"],
+        "summary": "DELETE Xóa ảnh đã tạo theo ID ảnh (Trang quản lý ảnh)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID hình ảnh cần xóa" }
+        ],
+        "responses": {
+          "200": { "description": "Xóa ảnh thành công" },
+          "403": { "description": "Không có quyền xóa ảnh của người khác" },
+          "404": { "description": "Ảnh không tồn tại" }
+        }
+      }
+    },
+    "/api/images/check-saved/{id}": {
+      "get": {
+        "tags": ["Trang chi tiết"],
+        "summary": "GET Thông tin đã lưu hình này chưa theo ID ảnh (Nút Save)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID hình ảnh" }
+        ],
+        "responses": {
+          "200": { "description": "Trả về trạng thái { daLuu: true/false }" }
+        }
+      }
+    },
+    "/api/images/save/{id}": {
+      "post": {
+        "tags": ["Trang chi tiết"],
+        "summary": "POST Lưu hoặc Bỏ lưu hình ảnh (Toggle Save/Unsave) (Mở rộng)",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID hình ảnh" }
+        ],
+        "responses": {
+          "200": { "description": "Đã lưu hoặc hủy lưu ảnh thành công" }
+        }
+      }
+    },
+    "/api/comments/image/{imageId}": {
+      "get": {
+        "tags": ["Trang chi tiết"],
+        "summary": "GET Thông tin bình luận theo ID ảnh (Trang chi tiết)",
+        "parameters": [
+          { "name": "imageId", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID hình ảnh" }
+        ],
+        "responses": {
+          "200": { "description": "Danh sách bình luận của bức ảnh" }
+        }
+      }
+    },
+    "/api/comments": {
+      "post": {
+        "tags": ["Trang chi tiết"],
+        "summary": "POST Lưu thông tin bình luận của người dùng với hình ảnh (Trang chi tiết)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["hinh_id", "noi_dung"],
+                "properties": {
+                  "hinh_id": { "type": "integer", "example": 1 },
+                  "noi_dung": { "type": "string", "example": "Ảnh chụp góc này nghệ thuật quá bạn ơi!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Thêm bình luận thành công" }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "get": {
+        "tags": ["Trang quản lý ảnh"],
+        "summary": "GET Thông tin user đang đăng nhập (Trang quản lý ảnh)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Lấy thông tin người dùng thành công" }
+        }
+      },
+      "put": {
+        "tags": ["Trang quản lý ảnh"],
+        "summary": "PUT Cập nhật thông tin user (Mở rộng)",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ho_ten": { "type": "string", "example": "Huỳnh Phúc Thành" },
+                  "tuoi": { "type": "integer", "example": 24 },
+                  "anh_dai_dien": { "type": "string", "example": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=300" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Cập nhật thành công" }
+        }
+      }
+    },
+    "/api/images/saved-by-user/{userId}": {
+      "get": {
+        "tags": ["Trang quản lý ảnh"],
+        "summary": "GET Danh sách ảnh đã lưu theo User ID (Trang quản lý ảnh)",
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID người dùng" }
+        ],
+        "responses": {
+          "200": { "description": "Danh sách hình ảnh mà user đã lưu" }
+        }
+      }
+    },
+    "/api/images/created-by-user/{userId}": {
+      "get": {
+        "tags": ["Trang quản lý ảnh"],
+        "summary": "GET Danh sách ảnh đã tạo theo User ID (Trang quản lý ảnh)",
+        "parameters": [
+          { "name": "userId", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID người dùng" }
+        ],
+        "responses": {
+          "200": { "description": "Danh sách hình ảnh mà user đã tạo (đã đăng tải)" }
+        }
+      }
+    }
+  }
+}

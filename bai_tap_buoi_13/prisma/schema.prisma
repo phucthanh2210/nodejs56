@@ -1,0 +1,65 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model NguoiDung {
+  nguoi_dung_id Int         @id @default(autoincrement())
+  email         String      @unique @db.VarChar(255)
+  mat_khau      String      @db.VarChar(255)
+  ho_ten        String      @db.VarChar(255)
+  tuoi          Int?        @default(18)
+  anh_dai_dien  String?     @default("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80") @db.VarChar(500)
+  ngay_tao      DateTime?   @default(now()) @db.DateTime(0)
+  hinh_anh      HinhAnh[]
+  binh_luan     BinhLuan[]
+  luu_anh       LuuAnh[]
+
+  @@map("nguoi_dung")
+}
+
+model HinhAnh {
+  hinh_id       Int         @id @default(autoincrement())
+  ten_hinh      String      @db.VarChar(255)
+  duong_dan     String      @db.VarChar(500)
+  mo_ta         String?     @db.Text
+  nguoi_dung_id Int
+  ngay_tao      DateTime?   @default(now()) @db.DateTime(0)
+  nguoi_dung    NguoiDung   @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: Cascade, onUpdate: Cascade)
+  binh_luan     BinhLuan[]
+  luu_anh       LuuAnh[]
+
+  @@index([nguoi_dung_id], map: "fk_hinh_anh_nguoi_dung")
+  @@map("hinh_anh")
+}
+
+model BinhLuan {
+  binh_luan_id   Int        @id @default(autoincrement())
+  nguoi_dung_id  Int
+  hinh_id        Int
+  ngay_binh_luan DateTime?  @default(now()) @db.DateTime(0)
+  noi_dung       String     @db.Text
+  nguoi_dung     NguoiDung  @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: Cascade, onUpdate: Cascade)
+  hinh_anh       HinhAnh    @relation(fields: [hinh_id], references: [hinh_id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([nguoi_dung_id], map: "fk_binh_luan_nguoi_dung")
+  @@index([hinh_id], map: "fk_binh_luan_hinh_anh")
+  @@map("binh_luan")
+}
+
+model LuuAnh {
+  nguoi_dung_id Int
+  hinh_id       Int
+  ngay_luu      DateTime?   @default(now()) @db.DateTime(0)
+  nguoi_dung    NguoiDung   @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: Cascade, onUpdate: Cascade)
+  hinh_anh      HinhAnh     @relation(fields: [hinh_id], references: [hinh_id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([nguoi_dung_id, hinh_id])
+  @@index([nguoi_dung_id], map: "fk_luu_anh_nguoi_dung")
+  @@index([hinh_id], map: "fk_luu_anh_hinh_anh")
+  @@map("luu_anh")
+}
