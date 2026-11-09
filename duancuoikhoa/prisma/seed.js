@@ -23,8 +23,8 @@ export async function seedDatabase() {
   ] });
   const release = new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00Z`);
   await prisma.phim.createMany({ skipDuplicates: true, data: [
-    { maPhim: 1, tenPhim: 'Hành trình vũ trụ', biDanh: 'hanh-trinh-vu-tru', moTa: 'Phim mẫu phục vụ demo đặt vé.', ngayKhoiChieu: release, danhGia: 8, hot: true, thoiLuong: 120 },
-    { maPhim: 2, tenPhim: 'Thành phố ánh sáng', biDanh: 'thanh-pho-anh-sang', moTa: 'Phim mẫu phục vụ demo quản lý lịch chiếu.', ngayKhoiChieu: release, danhGia: 7, thoiLuong: 100 },
+    { maPhim: 1, tenPhim: 'Hành trình vũ trụ', biDanh: 'hanh-trinh-vu-tru', moTa: 'Một phi hành đoàn lên đường khám phá những bí ẩn ngoài hệ Mặt Trời.', ngayKhoiChieu: release, danhGia: 8, hot: true, thoiLuong: 120 },
+    { maPhim: 2, tenPhim: 'Thành phố ánh sáng', biDanh: 'thanh-pho-anh-sang', moTa: 'Những con người xa lạ tìm thấy hy vọng giữa nhịp sống thành phố.', ngayKhoiChieu: release, danhGia: 7, thoiLuong: 100 },
   ] });
   await prisma.banner.createMany({ skipDuplicates: true, data: [{ maBanner: 1, maPhim: 1, hinhAnh: '/assets/movie-banner.svg' }] });
   for (const maRap of [1, 2, 3]) {

@@ -5,11 +5,11 @@ import { databaseUrl } from '../src/database-url.js';
 
 const require = createRequire(import.meta.url);
 
-export function runPrisma(args, { quiet = false } = {}) {
+export function runPrisma(args) {
   return execFileSync(process.execPath, [require.resolve('prisma/build/index.js'), ...args], {
     cwd: fileURLToPath(new URL('../', import.meta.url)),
     env: { ...process.env, DATABASE_URL: databaseUrl(), PRISMA_HIDE_UPDATE_MESSAGE: '1' },
-    stdio: quiet ? 'pipe' : 'inherit',
+    stdio: 'inherit',
     encoding: 'utf8',
   });
 }

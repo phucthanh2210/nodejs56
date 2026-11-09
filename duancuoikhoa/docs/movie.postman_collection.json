@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Movie Capstone API",
+    "name": "Movie API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -63,7 +63,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=0",
+          "raw": "{{baseUrl}}/api/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=1",
           "host": [
             "{{baseUrl}}"
           ],
@@ -75,7 +75,7 @@
           "query": [
             {
               "key": "MaLichChieu",
-              "value": "0"
+              "value": "1"
             }
           ]
         }
@@ -734,17 +734,17 @@
           "formdata": [
             {
               "key": "tenPhim",
-              "value": "Phim demo",
+              "value": "Hành trình vũ trụ",
               "type": "text"
             },
             {
               "key": "trailer",
-              "value": "Phim demo",
+              "value": "",
               "type": "text"
             },
             {
               "key": "moTa",
-              "value": "Phim demo",
+              "value": "Hành trình khám phá không gian.",
               "type": "text"
             },
             {
@@ -759,7 +759,7 @@
             },
             {
               "key": "danhGia",
-              "value": "1",
+              "value": "8",
               "type": "text"
             },
             {
@@ -769,7 +769,7 @@
             },
             {
               "key": "dangChieu",
-              "value": "false",
+              "value": "true",
               "type": "text"
             },
             {
@@ -785,7 +785,8 @@
             {
               "key": "File",
               "type": "file",
-              "src": []
+              "src": [],
+              "disabled": true
             }
           ]
         }
@@ -828,17 +829,17 @@
             },
             {
               "key": "tenPhim",
-              "value": "Phim demo",
+              "value": "Hành trình vũ trụ",
               "type": "text"
             },
             {
               "key": "trailer",
-              "value": "Phim demo",
+              "value": "",
               "type": "text"
             },
             {
               "key": "moTa",
-              "value": "Phim demo",
+              "value": "Hành trình khám phá không gian.",
               "type": "text"
             },
             {
@@ -853,7 +854,7 @@
             },
             {
               "key": "danhGia",
-              "value": "1",
+              "value": "8",
               "type": "text"
             },
             {
@@ -863,7 +864,7 @@
             },
             {
               "key": "dangChieu",
-              "value": "false",
+              "value": "true",
               "type": "text"
             },
             {
@@ -879,7 +880,8 @@
             {
               "key": "File",
               "type": "file",
-              "src": []
+              "src": [],
+              "disabled": true
             }
           ]
         }
@@ -926,7 +928,8 @@
             {
               "key": "file",
               "type": "file",
-              "src": []
+              "src": [],
+              "disabled": true
             }
           ]
         }
@@ -1006,7 +1009,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/QuanLyPhim/LayThongTinPhim?MaPhim=0",
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayThongTinPhim?MaPhim=1",
           "host": [
             "{{baseUrl}}"
           ],
@@ -1018,7 +1021,7 @@
           "query": [
             {
               "key": "MaPhim",
-              "value": "0"
+              "value": "1"
             }
           ]
         }
@@ -1106,7 +1109,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=0",
+          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=1",
           "host": [
             "{{baseUrl}}"
           ],
@@ -1118,7 +1121,7 @@
           "query": [
             {
               "key": "MaPhim",
-              "value": "0"
+              "value": "1"
             }
           ]
         }

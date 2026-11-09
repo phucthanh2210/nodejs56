@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Movie API - Dự án cuối khóa NodeJS",
+    "title": "Movie API",
     "version": "1.0.0",
-    "description": "API Movie theo đề capstone CyberSoft. Không cần TokenCybersoft. Đăng nhập và nhập Bearer <accessToken> vào Authorize. Ngày dd/MM/yyyy hoặc ISO; giờ không có múi giờ được hiểu là giờ Việt Nam (UTC+7). Các API ghi quản lý phim, lịch chiếu và người dùng yêu cầu QuanTri."
+    "description": "API quản lý phim, rạp chiếu, lịch chiếu và đặt vé. Đăng nhập để lấy accessToken; dùng Authorization: Bearer <accessToken> cho các API bảo vệ. Ngày giờ không có offset được hiểu theo UTC+7."
   },
   "paths": {
     "/api/QuanLyDatVe/DatVe": {
@@ -69,10 +69,11 @@
           {
             "name": "MaLichChieu",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer",
             "format": "int32",
-            "default": 0
+            "default": 1,
+            "minimum": 1
           }
         ],
         "responses": {
@@ -1224,9 +1225,11 @@
           {
             "name": "MaPhim",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "default": 1,
+            "minimum": 1
           }
         ],
         "responses": {
@@ -1269,9 +1272,11 @@
           {
             "name": "MaPhim",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "default": 1,
+            "minimum": 1
           }
         ],
         "responses": {
@@ -1314,10 +1319,11 @@
           {
             "name": "MaPhim",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer",
             "format": "int32",
-            "default": 0
+            "default": 1,
+            "minimum": 1
           }
         ],
         "responses": {
@@ -1458,10 +1464,11 @@
           {
             "name": "MaPhim",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "integer",
             "format": "int32",
-            "default": 0
+            "default": 1,
+            "minimum": 1
           }
         ],
         "responses": {
@@ -1657,23 +1664,6 @@
         "hoTen",
         "maLoaiNguoiDung"
       ]
-    },
-    "KeyValuePair[String,StringValues]": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string",
-          "readOnly": true
-        },
-        "value": {
-          "uniqueItems": false,
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "readOnly": true
-        }
-      }
     }
   },
   "basePath": "/",

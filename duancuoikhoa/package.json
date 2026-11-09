@@ -43,5 +43,6 @@
     "@prisma/config": {
       "deepmerge-ts": "8.0.0"
     }
-  }
+  },
+  "description": "REST API quản lý phim, lịch chiếu và đặt vé"
 }

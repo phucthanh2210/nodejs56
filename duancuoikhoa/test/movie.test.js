@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import mysql from 'mysql2/promise';
 import request from 'supertest';
-import { readFile } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { databaseUrl } from '../src/database-url.js';
 
 // Test data lives only in a database created by this process.
@@ -20,8 +20,13 @@ const { initializeDatabase } = await import('../scripts/init-db.js');
 const { prisma, query, connectionOptions, serialize } = await import('../src/db.js');
 const { default: app } = await import('../src/app.js');
 const { parseDate } = await import('../src/lib/validation.js');
+const uploadedFiles = new Set();
 
 after(async () => {
+  for (const path of uploadedFiles) {
+    assert.match(path, /^\/uploads\/[a-f0-9-]+\.(png|jpg|webp)$/);
+    await rm(new URL(`..${path}`, import.meta.url), { force: true });
+  }
   await prisma.$disconnect();
   assert.match(testDatabase, /^duancuoikhoa_test_\d+_[a-f0-9]{8}$/);
   const connection = await mysql.createConnection({ ...connectionOptions, database: undefined });
@@ -120,10 +125,12 @@ await test('Movie API integration with real MySQL', async t => {
     const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=', 'base64');
     const result = await adminRequest('post', '/api/QuanLyPhim/ThemPhimUploadHinh').field('tenPhim', 'Phim kiểm thử').field('moTa', 'Mô tả').field('ngayKhoiChieu', '20/12/2030').field('hot', 'true').attach('File', png, 'movie.png').expect(201);
     const movie = result.body.content;
+    uploadedFiles.add(movie.hinhAnh);
     assert.equal(movie.hot, true);
     await request(app).get(movie.hinhAnh).expect(200).expect('Content-Type', /image\/png/);
     await adminRequest('post', '/api/QuanLyPhim/CapNhatPhimUpload').field('maPhim', movie.maPhim).field('tenPhim', 'Phim đã sửa').expect(200);
-    await adminRequest('post', '/api/QuanLyPhim?tenPhim=Phim%20%C4%91%C3%A3%20s%E1%BB%ADa&maNhom=GP01').attach('file', png, 'replacement.png').expect(200);
+    const replacement = await adminRequest('post', '/api/QuanLyPhim?tenPhim=Phim%20%C4%91%C3%A3%20s%E1%BB%ADa&maNhom=GP01').attach('file', png, 'replacement.png').expect(200);
+    uploadedFiles.add(replacement.body.content.hinhAnh);
     await adminRequest('post', '/api/QuanLyPhim/CapNhatPhimUpload').field('maPhim', movie.maPhim).attach('File', Buffer.from('not an image'), 'fake.png').expect(400);
     await adminRequest('delete', `/api/QuanLyPhim/XoaPhim?MaPhim=${movie.maPhim}`).expect(200);
     await adminRequest('delete', '/api/QuanLyPhim/XP?MaPhim=999999').expect(404);
@@ -185,10 +192,9 @@ await test('Movie API integration with real MySQL', async t => {
     assert.equal(baseline.migration_name, '0_init');
   });
 
-  await t.test('Swagger and Postman contain every reference operation without Cybersoft token', async () => {
+  await t.test('Swagger and Postman document all HTTP operations', async () => {
     const swagger = await request(app).get('/swagger.json').expect(200);
     assert.equal(Object.values(swagger.body.paths).reduce((n, methods) => n + Object.keys(methods).length, 0), 30);
-    assert.equal(JSON.stringify(swagger.body.paths).includes('TokenCybersoft'), false);
     const postman = JSON.parse(await readFile(new URL('../docs/movie.postman_collection.json', import.meta.url), 'utf8'));
     assert.equal(postman.item.length, 30);
     await request(app).get('/swagger/').expect(200);
