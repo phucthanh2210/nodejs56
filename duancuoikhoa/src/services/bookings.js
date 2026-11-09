@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { pool, query } from '../db.js';
+import { transaction, query } from '../db.js';
 import { HttpError, respond } from '../lib/http.js';
 import { id, parseDate, sqlDate } from '../lib/validation.js';
 import { getMovie } from './movies.js';
@@ -14,9 +14,7 @@ const scheduleSchema = z.object({
 export async function createSchedule(req, res) {
   const data = scheduleSchema.parse(req.body);
   if (data.ngayChieuGioChieu <= new Date()) throw new HttpError(400, 'Lịch chiếu phải ở tương lai');
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
+  const schedule = await transaction(async connection => {
     const [room] = await query('SELECT maRap FROM rap WHERE maRap=? FOR UPDATE', [data.maRap], connection);
     if (!room) throw new HttpError(404, 'Không tìm thấy rạp');
     // Lock order is always room, movie, then showtime for schedule creation.
@@ -26,13 +24,10 @@ export async function createSchedule(req, res) {
     const end = sqlDate(new Date(data.ngayChieuGioChieu.getTime() + movie.thoiLuong * 60000));
     const conflicts = await query('SELECT maLichChieu FROM lich_chieu WHERE maRap=? AND ngayChieuGioChieu<? AND ketThuc>? FOR UPDATE', [data.maRap, end, start], connection);
     if (conflicts.length) throw new HttpError(409, 'Lịch chiếu bị trùng thời gian trong rạp');
-    const result = await query('INSERT INTO lich_chieu (maPhim,maRap,ngayChieuGioChieu,ketThuc,giaVe) VALUES (?,?,?,?,?)', [data.maPhim, data.maRap, start, end, data.giaVe], connection);
-    await connection.commit();
-    return respond(res, { maLichChieu: result.insertId, ...data, ngayChieuGioChieu: data.ngayChieuGioChieu.toISOString() }, 201);
-  } catch (error) {
-    await connection.rollback();
-    throw error;
-  } finally { connection.release(); }
+    const result = await connection.lich_chieu.create({ data: { maPhim: data.maPhim, maRap: data.maRap, ngayChieuGioChieu: data.ngayChieuGioChieu, ketThuc: new Date(`${end.replace(' ', 'T')}Z`), giaVe: data.giaVe } });
+    return { maLichChieu: result.maLichChieu, ...data, ngayChieuGioChieu: data.ngayChieuGioChieu.toISOString() };
+  });
+  return respond(res, schedule, 201);
 }
 
 const bookingSchema = z.object({
@@ -44,9 +39,7 @@ export async function bookTickets(req, res) {
   const data = bookingSchema.parse(req.body);
   const seats = data.danhSachVe.map(ticket => ticket.maGhe).sort((a, b) => a - b);
   if (new Set(seats).size !== seats.length) throw new HttpError(400, 'Danh sách ghế bị lặp');
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
+  const result = await transaction(async connection => {
     // Serialize reservations for a showtime; all seats commit or roll back together.
     const [showtime] = await query('SELECT * FROM lich_chieu WHERE maLichChieu=? FOR UPDATE', [data.maLichChieu], connection);
     if (!showtime) throw new HttpError(404, 'Không tìm thấy lịch chiếu');
@@ -57,13 +50,10 @@ export async function bookTickets(req, res) {
     if (data.danhSachVe.some(ticket => ticket.giaVe !== undefined && ticket.giaVe !== showtime.giaVe)) throw new HttpError(400, 'Giá vé không khớp giá của lịch chiếu');
     const booked = await query(`SELECT maGhe FROM ve WHERE maLichChieu=? AND maGhe IN (${placeholders}) FOR UPDATE`, [data.maLichChieu, ...seats], connection);
     if (booked.length) throw new HttpError(409, 'Một hoặc nhiều ghế đã được đặt');
-    for (const seat of seats) await query('INSERT INTO ve (taiKhoan,maLichChieu,maGhe,giaVe) VALUES (?,?,?,?)', [req.user.taiKhoan, data.maLichChieu, seat, showtime.giaVe], connection);
-    await connection.commit();
-    return respond(res, { maLichChieu: data.maLichChieu, danhSachVe: seats.map(maGhe => ({ maGhe, giaVe: showtime.giaVe })), tongTien: seats.length * showtime.giaVe }, 201);
-  } catch (error) {
-    await connection.rollback();
-    throw error;
-  } finally { connection.release(); }
+    await connection.ve.createMany({ data: seats.map(maGhe => ({ taiKhoan: req.user.taiKhoan, maLichChieu: data.maLichChieu, maGhe, giaVe: showtime.giaVe })) });
+    return { maLichChieu: data.maLichChieu, danhSachVe: seats.map(maGhe => ({ maGhe, giaVe: showtime.giaVe })), tongTien: seats.length * showtime.giaVe };
+  });
+  return respond(res, result, 201);
 }
 
 export async function seating(req, res) {

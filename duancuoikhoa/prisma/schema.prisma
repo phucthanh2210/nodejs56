@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model banner {
+  maBanner Int    @id @default(autoincrement())
+  maPhim   Int
+  hinhAnh  String @db.VarChar(1000)
+  phim     phim   @relation(fields: [maPhim], references: [maPhim], onDelete: Cascade, onUpdate: NoAction, map: "banner_ibfk_1")
+
+  @@index([maPhim], map: "maPhim")
+}
+
+model cum_rap {
+  maCumRap     String       @id @db.VarChar(100)
+  maHeThongRap String       @db.VarChar(50)
+  tenCumRap    String       @db.VarChar(200)
+  diaChi       String       @db.VarChar(500)
+  hinhAnh      String       @default("") @db.VarChar(1000)
+  he_thong_rap he_thong_rap @relation(fields: [maHeThongRap], references: [maHeThongRap], onDelete: NoAction, onUpdate: NoAction, map: "cum_rap_ibfk_1")
+  rap          rap[]
+
+  @@index([maHeThongRap], map: "maHeThongRap")
+}
+
+model ghe {
+  maGhe   Int         @id @default(autoincrement())
+  maRap   Int
+  tenGhe  String      @db.VarChar(10)
+  loaiGhe ghe_loaiGhe @default(Thuong)
+  stt     Int
+  rap     rap         @relation(fields: [maRap], references: [maRap], onDelete: NoAction, onUpdate: NoAction, map: "ghe_ibfk_1")
+  ve      ve[]
+
+  @@unique([maRap, tenGhe], map: "uq_seat_name")
+}
+
+model he_thong_rap {
+  maHeThongRap  String    @id @db.VarChar(50)
+  tenHeThongRap String    @db.VarChar(100)
+  biDanh        String    @db.VarChar(100)
+  logo          String    @default("") @db.VarChar(1000)
+  cum_rap       cum_rap[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model lich_chieu {
+  maLichChieu       Int      @id @default(autoincrement())
+  maPhim            Int
+  maRap             Int
+  ngayChieuGioChieu DateTime @db.DateTime(0)
+  ketThuc           DateTime @db.DateTime(0)
+  giaVe             Decimal  @db.Decimal(12, 0)
+  phim              phim     @relation(fields: [maPhim], references: [maPhim], onDelete: NoAction, onUpdate: NoAction, map: "lich_chieu_ibfk_1")
+  rap               rap      @relation(fields: [maRap], references: [maRap], onDelete: NoAction, onUpdate: NoAction, map: "lich_chieu_ibfk_2")
+  ve                ve[]
+
+  @@unique([maRap, ngayChieuGioChieu], map: "uq_showtime")
+  @@index([maPhim, ngayChieuGioChieu], map: "idx_movie_showtime")
+}
+
+model nguoi_dung {
+  taiKhoan        String                     @id @db.VarChar(50)
+  matKhau         String                     @db.VarChar(255)
+  email           String                     @unique(map: "email")
+  soDt            String                     @db.VarChar(20)
+  hoTen           String                     @db.VarChar(100)
+  maNhom          String                     @default("GP01") @db.VarChar(10)
+  maLoaiNguoiDung nguoi_dung_maLoaiNguoiDung @default(KhachHang)
+  createdAt       DateTime                   @default(now()) @db.Timestamp(0)
+  ve              ve[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model phim {
+  maPhim        Int          @id @default(autoincrement())
+  tenPhim       String       @db.VarChar(200)
+  biDanh        String       @db.VarChar(250)
+  trailer       String       @default("") @db.VarChar(1000)
+  hinhAnh       String       @default("") @db.VarChar(1000)
+  moTa          String       @db.Text
+  maNhom        String       @default("GP01") @db.VarChar(10)
+  ngayKhoiChieu DateTime     @db.Date
+  danhGia       Int          @default(0) @db.TinyInt
+  hot           Boolean      @default(false)
+  dangChieu     Boolean      @default(true)
+  sapChieu      Boolean      @default(false)
+  thoiLuong     Int          @default(120)
+  banner        banner[]
+  lich_chieu    lich_chieu[]
+
+  @@index([maNhom, ngayKhoiChieu], map: "idx_movie_group_date")
+}
+
+model rap {
+  maRap      Int          @id @default(autoincrement())
+  maCumRap   String       @db.VarChar(100)
+  tenRap     String       @db.VarChar(100)
+  ghe        ghe[]
+  lich_chieu lich_chieu[]
+  cum_rap    cum_rap      @relation(fields: [maCumRap], references: [maCumRap], onDelete: NoAction, onUpdate: NoAction, map: "rap_ibfk_1")
+
+  @@index([maCumRap], map: "maCumRap")
+}
+
+model ve {
+  maVe        Int        @id @default(autoincrement())
+  taiKhoan    String     @db.VarChar(50)
+  maLichChieu Int
+  maGhe       Int
+  giaVe       Decimal    @db.Decimal(12, 0)
+  ngayDat     DateTime   @default(now()) @db.Timestamp(0)
+  nguoi_dung  nguoi_dung @relation(fields: [taiKhoan], references: [taiKhoan], onDelete: NoAction, onUpdate: NoAction, map: "ve_ibfk_1")
+  lich_chieu  lich_chieu @relation(fields: [maLichChieu], references: [maLichChieu], onDelete: NoAction, onUpdate: NoAction, map: "ve_ibfk_2")
+  ghe         ghe        @relation(fields: [maGhe], references: [maGhe], onDelete: NoAction, onUpdate: NoAction, map: "ve_ibfk_3")
+
+  @@unique([maLichChieu, maGhe], map: "uq_booked_seat")
+  @@index([maGhe], map: "maGhe")
+  @@index([taiKhoan], map: "taiKhoan")
+}
+
+enum ghe_loaiGhe {
+  Thuong
+  Vip
+}
+
+enum nguoi_dung_maLoaiNguoiDung {
+  KhachHang
+  QuanTri
+}

@@ -1,4 +1,4 @@
-import { query, pool } from '../db.js';
+import { query, prisma, transaction, serialize } from '../db.js';
 import { HttpError, respond } from '../lib/http.js';
 import { movieSchema, id, group, keyword, pagination, paginated, parseDate, slug } from '../lib/validation.js';
 import { saveImage } from '../middleware/upload.js';
@@ -7,10 +7,10 @@ export function movieDto(movie) {
   return { ...movie, hot: Boolean(movie.hot), dangChieu: Boolean(movie.dangChieu), sapChieu: Boolean(movie.sapChieu) };
 }
 
-export async function getMovie(maPhim, connection = pool) {
-  const [movie] = await query('SELECT * FROM phim WHERE maPhim=?', [id.parse(maPhim)], connection);
+export async function getMovie(maPhim, connection = prisma) {
+  const movie = await connection.phim.findUnique({ where: { maPhim: id.parse(maPhim) } });
   if (!movie) throw new HttpError(404, 'Không tìm thấy phim');
-  return movieDto(movie);
+  return movieDto(serialize(movie));
 }
 
 export async function listMovies(req, res) {
@@ -34,18 +34,15 @@ export async function addMovie(req, res) {
   const data = movieSchema.parse(req.body);
   const image = await saveImage(req.file);
   const fields = { ...data, biDanh: slug(data.tenPhim), hinhAnh: image || '' };
-  const keys = Object.keys(fields);
-  const result = await query(`INSERT INTO phim (${keys.join(',')}) VALUES (${keys.map(() => '?').join(',')})`, Object.values(fields));
-  return respond(res, await getMovie(result.insertId), 201);
+  const movie = await prisma.phim.create({ data: { ...fields, ngayKhoiChieu: new Date(`${fields.ngayKhoiChieu}T00:00:00Z`) } });
+  return respond(res, movieDto(serialize(movie)), 201);
 }
 
 export async function updateMovie(req, res) {
   const { maPhim: rawId, ...body } = req.body || {};
   const maPhim = id.parse(rawId);
   const data = movieSchema.partial().parse(body);
-  const connection = await pool.getConnection();
-  try {
-    await connection.beginTransaction();
+  await transaction(async connection => {
     const [movie] = await query('SELECT maPhim,thoiLuong FROM phim WHERE maPhim=? FOR UPDATE', [maPhim], connection);
     if (!movie) throw new HttpError(404, 'Không tìm thấy phim');
     if (data.thoiLuong !== undefined && data.thoiLuong !== movie.thoiLuong) {
@@ -58,19 +55,15 @@ export async function updateMovie(req, res) {
     if (image) data.hinhAnh = image;
     const keys = Object.keys(data);
     if (!keys.length) throw new HttpError(400, 'Cần dữ liệu cập nhật');
-    await query(`UPDATE phim SET ${keys.map(key => `${key}=?`).join(',')} WHERE maPhim=?`, [...Object.values(data), maPhim], connection);
-    await connection.commit();
-  } catch (error) {
-    await connection.rollback();
-    throw error;
-  } finally { connection.release(); }
+    await connection.phim.update({ where: { maPhim }, data: { ...data, ...(data.ngayKhoiChieu ? { ngayKhoiChieu: new Date(`${data.ngayKhoiChieu}T00:00:00Z`) } : {}) } });
+  });
   return respond(res, await getMovie(maPhim));
 }
 
 export async function deleteMovie(req, res) {
   const maPhim = id.parse(req.query.MaPhim);
   await getMovie(maPhim);
-  await query('DELETE FROM phim WHERE maPhim=?', [maPhim]);
+  await prisma.phim.delete({ where: { maPhim } });
   return respond(res, 'Xóa phim thành công');
 }
 
@@ -83,6 +76,6 @@ export async function uploadMovieImage(req, res) {
   if (rows.length > 1) throw new HttpError(409, 'Tên phim trùng; dùng CapNhatPhimUpload với maPhim');
   const image = await saveImage(req.file);
   if (!image) throw new HttpError(400, 'Thiếu file ảnh');
-  await query('UPDATE phim SET hinhAnh=? WHERE maPhim=?', [image, rows[0].maPhim]);
+  await prisma.phim.update({ where: { maPhim: rows[0].maPhim }, data: { hinhAnh: image } });
   return respond(res, await getMovie(rows[0].maPhim));
 }

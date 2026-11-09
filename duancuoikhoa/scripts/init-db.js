@@ -1,36 +1,35 @@
-import { readFile } from 'node:fs/promises';
 import mysql from 'mysql2/promise';
-import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { pathToFileURL } from 'node:url';
-import env from '../src/config.js';
-import { connectionOptions } from '../src/db.js';
+import { prisma, connectionOptions } from '../src/db.js';
+import { seedDatabase } from '../prisma/seed.js';
+import { runPrisma } from './prisma-cli.js';
+
+const expectedTables = ['banner', 'cum_rap', 'ghe', 'he_thong_rap', 'lich_chieu', 'nguoi_dung', 'phim', 'rap', 've'];
 
 export async function initializeDatabase() {
-  const adminEmail = z.email().parse(process.env.ADMIN_EMAIL);
-  const adminPassword = z.string().min(12).max(72).parse(process.env.ADMIN_PASSWORD);
-  const connection = await mysql.createConnection({ ...connectionOptions, database: undefined, multipleStatements: true });
+  z.email().parse(process.env.ADMIN_EMAIL);
+  z.string().min(12).max(72).parse(process.env.ADMIN_PASSWORD);
+  // mysql2 only provisions the database before Prisma has a schema to connect to.
+  const connection = await mysql.createConnection({ ...connectionOptions, database: undefined });
   try {
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${env.DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-    await connection.changeUser({ database: env.DB_NAME });
-    const schema = await readFile(new URL('../db_duancuoikhoa.sql', import.meta.url), 'utf8');
-    await connection.query(schema.replace(/^CREATE DATABASE[^;]*;\s*USE[^;]*;/, ''));
-    const [users] = await connection.execute('SELECT taiKhoan FROM nguoi_dung WHERE taiKhoan=?', ['admin']);
-    if (!users.length) await connection.execute('INSERT INTO nguoi_dung (taiKhoan,matKhau,email,soDt,hoTen,maLoaiNguoiDung) VALUES (?,?,?,?,?,?)', ['admin', await bcrypt.hash(adminPassword, 12), adminEmail, '0900000000', 'Quản trị viên', 'QuanTri']);
-    for (const room of [1, 2, 3]) {
-      for (let seat = 1; seat <= 80; seat++) {
-        const name = `${String.fromCharCode(65 + Math.floor((seat - 1) / 10))}${String((seat - 1) % 10 + 1).padStart(2, '0')}`;
-        await connection.execute('INSERT IGNORE INTO ghe (maRap,tenGhe,loaiGhe,stt) VALUES (?,?,?,?)', [room, name, seat > 30 && seat <= 60 ? 'Vip' : 'Thuong', seat]);
-      }
+    const name = connectionOptions.database;
+    const [existing] = await connection.execute('SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME=?', [name]);
+    if (!existing.length) await connection.query(`CREATE DATABASE \`${name}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+    const [tables] = await connection.execute("SELECT TABLE_NAME AS name FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_TYPE='BASE TABLE'", [name]);
+    const names = tables.map(table => table.name);
+    if (names.length && !names.includes('_prisma_migrations')) {
+      if (names.length !== expectedTables.length || !expectedTables.every(table => names.includes(table))) throw new Error('Database hiện có không khớp 9 bảng dự án; dừng để tránh thay đổi dữ liệu.');
+      // Compare before baselining. No reset, DROP, or overwrite of existing data.
+      runPrisma(['migrate', 'diff', '--from-schema-datasource', 'prisma/schema.prisma', '--to-schema-datamodel', 'prisma/schema.prisma', '--exit-code']);
+      runPrisma(['migrate', 'resolve', '--applied', '0_init']);
     }
-    const [schedules] = await connection.execute('SELECT maLichChieu FROM lich_chieu LIMIT 1');
-    if (!schedules.length) await connection.query(`INSERT INTO lich_chieu (maPhim,maRap,ngayChieuGioChieu,ketThuc,giaVe) VALUES
-      (1,1,DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY),DATE_ADD(DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY), INTERVAL 120 MINUTE),75000),
-      (2,3,DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY),DATE_ADD(DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY), INTERVAL 100 MINUTE),90000)`);
-    console.log(`Đã khởi tạo ${env.DB_NAME}. Tài khoản quản trị: admin (mật khẩu trong biến ADMIN_PASSWORD).`);
+    runPrisma(['migrate', 'deploy']);
+    await seedDatabase();
+    console.log(`Đã khởi tạo ${name} bằng Prisma. Tài khoản quản trị: admin (mật khẩu trong biến ADMIN_PASSWORD).`);
   } finally { await connection.end(); }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  initializeDatabase().catch(error => { console.error(error.message); process.exitCode = 1; });
+  initializeDatabase().catch(error => { console.error(error.message); process.exitCode = 1; }).finally(() => prisma.$disconnect());
 }

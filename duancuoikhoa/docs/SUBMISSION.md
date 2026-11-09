@@ -8,6 +8,7 @@ Theo PDF, bài nộp gồm source GitHub, API đã deploy, tài liệu API và l
 | Swagger | `/swagger` trên server, đặc tả trong [swagger.json](./swagger.json) |
 | Postman | [movie.postman_collection.json](./movie.postman_collection.json) |
 | SQL | [db_duancuoikhoa.sql](../db_duancuoikhoa.sql) |
+| Prisma | [Schema](../prisma/schema.prisma), [migration](../prisma/migrations/0_init/migration.sql), [seed](../prisma/seed.js), [hướng dẫn chạy lại database](./PRISMA.md) |
 | API deploy | Cần địa chỉ MySQL truy cập từ hosting và tài khoản hosting |
 | Video YouTube | Học viên quay demo và bổ sung link |
 

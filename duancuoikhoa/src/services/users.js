@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import env from '../config.js';
-import { query } from '../db.js';
+import { query, prisma } from '../db.js';
 import { userColumns, requireOwner } from '../middleware/auth.js';
 import { HttpError, respond } from '../lib/http.js';
 import { userSchema, account, group, keyword, pagination, paginated } from '../lib/validation.js';
@@ -18,15 +18,14 @@ export async function addUser(req, res) {
 
 async function create(data, res) {
   const hash = await bcrypt.hash(data.matKhau, 12);
-  await query('INSERT INTO nguoi_dung (taiKhoan,matKhau,email,soDt,hoTen,maNhom,maLoaiNguoiDung) VALUES (?,?,?,?,?,?,?)',
-    [data.taiKhoan, hash, data.email, data.soDt, data.hoTen, data.maNhom, data.maLoaiNguoiDung]);
+  await prisma.nguoi_dung.create({ data: { ...data, matKhau: hash } });
   const { matKhau, ...user } = data;
   return respond(res, user, 201);
 }
 
 export async function login(req, res) {
   const data = z.object({ taiKhoan: account, matKhau: z.string().min(1).max(72) }).parse(req.body);
-  const [user] = await query('SELECT * FROM nguoi_dung WHERE taiKhoan=?', [data.taiKhoan]);
+  const user = await prisma.nguoi_dung.findUnique({ where: { taiKhoan: data.taiKhoan } });
   if (!user || !await bcrypt.compare(data.matKhau, user.matKhau)) throw new HttpError(401, 'Tài khoản hoặc mật khẩu không đúng');
   const { matKhau, createdAt, ...publicUser } = user;
   const accessToken = jwt.sign({}, env.JWT_SECRET, { subject: user.taiKhoan, algorithm: 'HS256', expiresIn: env.JWT_EXPIRES_IN });
@@ -73,8 +72,7 @@ export async function updateUser(req, res) {
   if (req.user.maLoaiNguoiDung !== 'QuanTri' && (data.maLoaiNguoiDung !== existing.maLoaiNguoiDung || data.maNhom !== existing.maNhom)) throw new HttpError(403, 'Không được thay đổi quyền hoặc nhóm');
   if (existing.maLoaiNguoiDung === 'QuanTri' && data.maLoaiNguoiDung !== 'QuanTri') throw new HttpError(409, 'Không hạ quyền tài khoản quản trị qua API này');
   const hash = data.matKhau ? await bcrypt.hash(data.matKhau, 12) : existing.matKhau;
-  await query('UPDATE nguoi_dung SET matKhau=?,email=?,soDt=?,hoTen=?,maNhom=?,maLoaiNguoiDung=? WHERE taiKhoan=?',
-    [hash, data.email, data.soDt, data.hoTen, data.maNhom, data.maLoaiNguoiDung, target]);
+  await prisma.nguoi_dung.update({ where: { taiKhoan: target }, data: { ...data, matKhau: hash } });
   const { matKhau, ...user } = data;
   return respond(res, user);
 }
@@ -84,6 +82,6 @@ export async function deleteUser(req, res) {
   const [user] = await query('SELECT maLoaiNguoiDung FROM nguoi_dung WHERE taiKhoan=?', [target]);
   if (!user) throw new HttpError(404, 'Không tìm thấy người dùng');
   if (user.maLoaiNguoiDung === 'QuanTri') throw new HttpError(409, 'Không xóa tài khoản quản trị qua API này');
-  await query('DELETE FROM nguoi_dung WHERE taiKhoan=?', [target]);
+  await prisma.nguoi_dung.delete({ where: { taiKhoan: target } });
   return respond(res, 'Xóa người dùng thành công');
 }

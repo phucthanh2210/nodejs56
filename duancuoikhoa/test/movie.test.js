@@ -5,20 +5,24 @@ import { randomBytes } from 'node:crypto';
 import mysql from 'mysql2/promise';
 import request from 'supertest';
 import { readFile } from 'node:fs/promises';
+import { databaseUrl } from '../src/database-url.js';
 
 // Test data lives only in a database created by this process.
 const testDatabase = `duancuoikhoa_test_${process.pid}_${randomBytes(4).toString('hex')}`;
+const testUrl = new URL(databaseUrl());
+testUrl.pathname = `/${testDatabase}`;
+process.env.DATABASE_URL = testUrl.toString();
 process.env.DB_NAME = testDatabase;
 process.env.NODE_ENV = 'test';
 process.env.ADMIN_EMAIL = 'test-admin@example.com';
 process.env.ADMIN_PASSWORD = 'TestAdmin@123456';
 const { initializeDatabase } = await import('../scripts/init-db.js');
-const { pool, query, connectionOptions } = await import('../src/db.js');
+const { prisma, query, connectionOptions, serialize } = await import('../src/db.js');
 const { default: app } = await import('../src/app.js');
 const { parseDate } = await import('../src/lib/validation.js');
 
 after(async () => {
-  await pool.end();
+  await prisma.$disconnect();
   assert.match(testDatabase, /^duancuoikhoa_test_\d+_[a-f0-9]{8}$/);
   const connection = await mysql.createConnection({ ...connectionOptions, database: undefined });
   try { await connection.query(`DROP DATABASE IF EXISTS \`${testDatabase}\``); }
@@ -164,6 +168,21 @@ await test('Movie API integration with real MySQL', async t => {
     await adminRequest('delete', '/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=movie_user').expect(409);
     await query('UPDATE lich_chieu SET ngayChieuGioChieu=?,ketThuc=? WHERE maLichChieu=1', ['2000-01-01 00:00:00', '2000-01-01 02:00:00']);
     await userRequest('post', '/api/QuanLyDatVe/DatVe').send({ maLichChieu: 1, danhSachVe: [{ maGhe: 4 }] }).expect(409);
+  });
+
+  await t.test('baseline preserves existing data and password without recreating tables', async () => {
+    const models = ['banner', 'cum_rap', 'ghe', 'he_thong_rap', 'lich_chieu', 'nguoi_dung', 'phim', 'rap', 've'];
+    const before = await Promise.all(models.map(model => prisma[model].count()));
+    const adminBefore = await prisma.nguoi_dung.findUnique({ where: { taiKhoan: 'admin' } });
+    const ticketsBefore = serialize(await prisma.ve.findMany({ orderBy: { maVe: 'asc' } }));
+    assert.equal(connectionOptions.database, testDatabase);
+    await prisma.$executeRawUnsafe('DROP TABLE `_prisma_migrations`');
+    await initializeDatabase();
+    assert.deepEqual(await Promise.all(models.map(model => prisma[model].count())), before);
+    assert.equal((await prisma.nguoi_dung.findUnique({ where: { taiKhoan: 'admin' } })).matKhau, adminBefore.matKhau);
+    assert.deepEqual(serialize(await prisma.ve.findMany({ orderBy: { maVe: 'asc' } })), ticketsBefore);
+    const [baseline] = await query('SELECT migration_name FROM _prisma_migrations WHERE migration_name=? AND finished_at IS NOT NULL', ['0_init']);
+    assert.equal(baseline.migration_name, '0_init');
   });
 
   await t.test('Swagger and Postman contain every reference operation without Cybersoft token', async () => {
