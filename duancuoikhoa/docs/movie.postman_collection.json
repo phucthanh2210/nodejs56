@@ -1,0 +1,1128 @@
+{
+  "info": {
+    "name": "Movie Capstone API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "post_DatVe",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyDatVe/DatVe",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyDatVe",
+            "DatVe"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maLichChieu\": 1,\n  \"danhSachVe\": [\n    {\n      \"maGhe\": 1,\n      \"giaVe\": 75000\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachPhongVe",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyDatVe/LayDanhSachPhongVe?MaLichChieu=0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyDatVe",
+            "LayDanhSachPhongVe"
+          ],
+          "query": [
+            {
+              "key": "MaLichChieu",
+              "value": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_TaoLichChieu",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyDatVe/TaoLichChieu",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyDatVe",
+            "TaoLichChieu"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maPhim\": 1,\n  \"maRap\": \"1\",\n  \"ngayChieuGioChieu\": \"20/12/2030 19:00:00\",\n  \"giaVe\": 75000\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachLoaiNguoiDung",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/LayDanhSachLoaiNguoiDung",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "LayDanhSachLoaiNguoiDung"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
+      "name": "post_DangNhap",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/DangNhap",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "DangNhap"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"taiKhoan\": \"admin\",\n  \"matKhau\": \"Xem ADMIN_PASSWORD trong .env\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const body = pm.response.json();",
+              "if (body.content?.accessToken) pm.collectionVariables.set('token', body.content.accessToken);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "post_DangKy",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/DangKy",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "DangKy"
+          ],
+          "query": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"taiKhoan\": \"khachhang01\",\n  \"matKhau\": \"Movie@123456\",\n  \"email\": \"khachhang01@example.com\",\n  \"soDt\": \"0901234567\",\n  \"maNhom\": \"GP01\",\n  \"hoTen\": \"Nguyễn Văn An\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachNguoiDung",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP01&tuKhoa=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "LayDanhSachNguoiDung"
+          ],
+          "query": [
+            {
+              "key": "MaNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tuKhoa",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachNguoiDungPhanTrang",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/LayDanhSachNguoiDungPhanTrang?MaNhom=GP01&tuKhoa=&soTrang=1&soPhanTuTrenTrang=20",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "LayDanhSachNguoiDungPhanTrang"
+          ],
+          "query": [
+            {
+              "key": "MaNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tuKhoa",
+              "value": ""
+            },
+            {
+              "key": "soTrang",
+              "value": "1"
+            },
+            {
+              "key": "soPhanTuTrenTrang",
+              "value": "20"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_TimKiemNguoiDung",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=GP01&tuKhoa=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "TimKiemNguoiDung"
+          ],
+          "query": [
+            {
+              "key": "MaNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tuKhoa",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_TimKiemNguoiDungPhanTrang",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/TimKiemNguoiDungPhanTrang?MaNhom=GP01&tuKhoa=&soTrang=1&soPhanTuTrenTrang=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "TimKiemNguoiDungPhanTrang"
+          ],
+          "query": [
+            {
+              "key": "MaNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tuKhoa",
+              "value": ""
+            },
+            {
+              "key": "soTrang",
+              "value": "1"
+            },
+            {
+              "key": "soPhanTuTrenTrang",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_ThongTinTaiKhoan",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/ThongTinTaiKhoan",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "ThongTinTaiKhoan"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_LayThongTinNguoiDung",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/LayThongTinNguoiDung?taiKhoan=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "LayThongTinNguoiDung"
+          ],
+          "query": [
+            {
+              "key": "taiKhoan",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_ThemNguoiDung",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/ThemNguoiDung",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "ThemNguoiDung"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"taiKhoan\": \"khachhang01\",\n  \"matKhau\": \"Movie@123456\",\n  \"email\": \"khachhang01@example.com\",\n  \"soDt\": \"0901234567\",\n  \"maNhom\": \"GP01\",\n  \"hoTen\": \"Nguyễn Văn An\",\n  \"maLoaiNguoiDung\": \"KhachHang\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "put_CapNhatThongTinNguoiDung",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "CapNhatThongTinNguoiDung"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"taiKhoan\": \"khachhang01\",\n  \"matKhau\": \"Movie@123456\",\n  \"email\": \"khachhang01@example.com\",\n  \"soDt\": \"0901234567\",\n  \"maNhom\": \"GP01\",\n  \"hoTen\": \"Nguyễn Văn An\",\n  \"maLoaiNguoiDung\": \"KhachHang\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "post_CapNhatThongTinNguoiDung",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "CapNhatThongTinNguoiDung"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"taiKhoan\": \"khachhang01\",\n  \"matKhau\": \"Movie@123456\",\n  \"email\": \"khachhang01@example.com\",\n  \"soDt\": \"0901234567\",\n  \"maNhom\": \"GP01\",\n  \"hoTen\": \"Nguyễn Văn An\",\n  \"maLoaiNguoiDung\": \"KhachHang\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "delete_XoaNguoiDung",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyNguoiDung",
+            "XoaNguoiDung"
+          ],
+          "query": [
+            {
+              "key": "TaiKhoan",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachBanner",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayDanhSachBanner",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "LayDanhSachBanner"
+          ],
+          "query": []
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachPhim",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayDanhSachPhim?maNhom=GP01&tenPhim=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "LayDanhSachPhim"
+          ],
+          "query": [
+            {
+              "key": "maNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tenPhim",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachPhimPhanTrang",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayDanhSachPhimPhanTrang?maNhom=GP01&tenPhim=&soTrang=1&soPhanTuTrenTrang=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "LayDanhSachPhimPhanTrang"
+          ],
+          "query": [
+            {
+              "key": "maNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tenPhim",
+              "value": ""
+            },
+            {
+              "key": "soTrang",
+              "value": "1"
+            },
+            {
+              "key": "soPhanTuTrenTrang",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayDanhSachPhimTheoNgay",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayDanhSachPhimTheoNgay?maNhom=GP01&tenPhim=&soTrang=1&soPhanTuTrenTrang=10&tuNgay=&denNgay=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "LayDanhSachPhimTheoNgay"
+          ],
+          "query": [
+            {
+              "key": "maNhom",
+              "value": "GP01"
+            },
+            {
+              "key": "tenPhim",
+              "value": ""
+            },
+            {
+              "key": "soTrang",
+              "value": "1"
+            },
+            {
+              "key": "soPhanTuTrenTrang",
+              "value": "10"
+            },
+            {
+              "key": "tuNgay",
+              "value": ""
+            },
+            {
+              "key": "denNgay",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_ThemPhimUploadHinh",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/ThemPhimUploadHinh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "ThemPhimUploadHinh"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "tenPhim",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "trailer",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "moTa",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "maNhom",
+              "value": "GP01",
+              "type": "text"
+            },
+            {
+              "key": "ngayKhoiChieu",
+              "value": "20/12/2030",
+              "type": "text"
+            },
+            {
+              "key": "danhGia",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "hot",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "dangChieu",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "sapChieu",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "thoiLuong",
+              "value": "120",
+              "type": "text"
+            },
+            {
+              "key": "File",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_CapNhatPhimUpload",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/CapNhatPhimUpload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "CapNhatPhimUpload"
+          ],
+          "query": []
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "maPhim",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "tenPhim",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "trailer",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "moTa",
+              "value": "Phim demo",
+              "type": "text"
+            },
+            {
+              "key": "maNhom",
+              "value": "GP01",
+              "type": "text"
+            },
+            {
+              "key": "ngayKhoiChieu",
+              "value": "20/12/2030",
+              "type": "text"
+            },
+            {
+              "key": "danhGia",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "hot",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "dangChieu",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "sapChieu",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "thoiLuong",
+              "value": "120",
+              "type": "text"
+            },
+            {
+              "key": "File",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "post_QuanLyPhim",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim?tenPhim=&maNhom=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim"
+          ],
+          "query": [
+            {
+              "key": "tenPhim",
+              "value": ""
+            },
+            {
+              "key": "maNhom",
+              "value": ""
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "delete_XP",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/XP?MaPhim=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "XP"
+          ],
+          "query": [
+            {
+              "key": "MaPhim",
+              "value": "1"
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "delete_XoaPhim",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/XoaPhim?MaPhim=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "XoaPhim"
+          ],
+          "query": [
+            {
+              "key": "MaPhim",
+              "value": "1"
+            }
+          ]
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayThongTinPhim",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyPhim/LayThongTinPhim?MaPhim=0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyPhim",
+            "LayThongTinPhim"
+          ],
+          "query": [
+            {
+              "key": "MaPhim",
+              "value": "0"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayThongTinHeThongRap",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinHeThongRap?maHeThongRap=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyRap",
+            "LayThongTinHeThongRap"
+          ],
+          "query": [
+            {
+              "key": "maHeThongRap",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayThongTinCumRapTheoHeThong",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinCumRapTheoHeThong?maHeThongRap=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyRap",
+            "LayThongTinCumRapTheoHeThong"
+          ],
+          "query": [
+            {
+              "key": "maHeThongRap",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayThongTinLichChieuHeThongRap",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinLichChieuHeThongRap?maHeThongRap=&maNhom=GP01",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyRap",
+            "LayThongTinLichChieuHeThongRap"
+          ],
+          "query": [
+            {
+              "key": "maHeThongRap",
+              "value": ""
+            },
+            {
+              "key": "maNhom",
+              "value": "GP01"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "get_LayThongTinLichChieuPhim",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/QuanLyRap/LayThongTinLichChieuPhim?MaPhim=0",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "QuanLyRap",
+            "LayThongTinLichChieuPhim"
+          ],
+          "query": [
+            {
+              "key": "MaPhim",
+              "value": "0"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1694 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Movie API - Dự án cuối khóa NodeJS",
+    "version": "1.0.0",
+    "description": "API Movie theo đề capstone CyberSoft. Không cần TokenCybersoft. Đăng nhập và nhập Bearer <accessToken> vào Authorize. Ngày dd/MM/yyyy hoặc ISO; giờ không có múi giờ được hiểu là giờ Việt Nam (UTC+7). Các API ghi quản lý phim, lịch chiếu và người dùng yêu cầu QuanTri."
+  },
+  "paths": {
+    "/api/QuanLyDatVe/DatVe": {
+      "post": {
+        "tags": [
+          "QuanLyDatVe"
+        ],
+        "operationId": "post_DatVe",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "DanhSachVe",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DanhSachVeDat"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "DatVe",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyDatVe/LayDanhSachPhongVe": {
+      "get": {
+        "tags": [
+          "QuanLyDatVe"
+        ],
+        "operationId": "get_LayDanhSachPhongVe",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaLichChieu",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachPhongVe"
+      }
+    },
+    "/api/QuanLyDatVe/TaoLichChieu": {
+      "post": {
+        "tags": [
+          "QuanLyDatVe"
+        ],
+        "operationId": "post_TaoLichChieu",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "lich",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LichChieuInsert"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "TaoLichChieu",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyNguoiDung/LayDanhSachLoaiNguoiDung": {
+      "get": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "get_LayDanhSachLoaiNguoiDung",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachLoaiNguoiDung"
+      }
+    },
+    "/api/QuanLyNguoiDung/DangNhap": {
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_DangNhap",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "ndDN",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ThongTinDangNhapVM"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "DangNhap"
+      }
+    },
+    "/api/QuanLyNguoiDung/DangKy": {
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_DangKy",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "nd",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NguoiDung_VM"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "DangKy"
+      }
+    },
+    "/api/QuanLyNguoiDung/LayDanhSachNguoiDung": {
+      "get": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "get_LayDanhSachNguoiDung",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tuKhoa",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachNguoiDung"
+      }
+    },
+    "/api/QuanLyNguoiDung/LayDanhSachNguoiDungPhanTrang": {
+      "get": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "get_LayDanhSachNguoiDungPhanTrang",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tuKhoa",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          {
+            "name": "soPhanTuTrenTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 20
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachNguoiDungPhanTrang"
+      }
+    },
+    "/api/QuanLyNguoiDung/TimKiemNguoiDung": {
+      "get": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "get_TimKiemNguoiDung",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tuKhoa",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "TimKiemNguoiDung"
+      }
+    },
+    "/api/QuanLyNguoiDung/TimKiemNguoiDungPhanTrang": {
+      "get": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "get_TimKiemNguoiDungPhanTrang",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tuKhoa",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          {
+            "name": "soPhanTuTrenTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "TimKiemNguoiDungPhanTrang"
+      }
+    },
+    "/api/QuanLyNguoiDung/ThongTinTaiKhoan": {
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_ThongTinTaiKhoan",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "ThongTinTaiKhoan",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyNguoiDung/LayThongTinNguoiDung": {
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_LayThongTinNguoiDung",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "taiKhoan",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinNguoiDung",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyNguoiDung/ThemNguoiDung": {
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_ThemNguoiDung",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "nd",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NguoiDungVM"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "ThemNguoiDung",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung": {
+      "put": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "put_CapNhatThongTinNguoiDung",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "nd",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NguoiDungVM"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "CapNhatThongTinNguoiDung",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "post_CapNhatThongTinNguoiDung",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "nd",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NguoiDungVM"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "CapNhatThongTinNguoiDung",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyNguoiDung/XoaNguoiDung": {
+      "delete": {
+        "tags": [
+          "QuanLyNguoiDung"
+        ],
+        "operationId": "delete_XoaNguoiDung",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "TaiKhoan",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "XoaNguoiDung",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim/LayDanhSachBanner": {
+      "get": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "get_LayDanhSachBanner",
+        "consumes": [],
+        "produces": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachBanner"
+      }
+    },
+    "/api/QuanLyPhim/LayDanhSachPhim": {
+      "get": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "get_LayDanhSachPhim",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tenPhim",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachPhim"
+      }
+    },
+    "/api/QuanLyPhim/LayDanhSachPhimPhanTrang": {
+      "get": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "get_LayDanhSachPhimPhanTrang",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tenPhim",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          {
+            "name": "soPhanTuTrenTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachPhimPhanTrang"
+      }
+    },
+    "/api/QuanLyPhim/LayDanhSachPhimTheoNgay": {
+      "get": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "get_LayDanhSachPhimTheoNgay",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          },
+          {
+            "name": "tenPhim",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "soTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1
+          },
+          {
+            "name": "soPhanTuTrenTrang",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 10
+          },
+          {
+            "name": "tuNgay",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "denNgay",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayDanhSachPhimTheoNgay"
+      }
+    },
+    "/api/QuanLyPhim/ThemPhimUploadHinh": {
+      "post": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "post_ThemPhimUploadHinh",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "tenPhim",
+            "type": "string",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "trailer",
+            "type": "string",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "moTa",
+            "type": "string",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "maNhom",
+            "type": "string",
+            "default": "GP01",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "ngayKhoiChieu",
+            "type": "string",
+            "description": "dd/MM/yyyy hoặc yyyy-MM-dd",
+            "in": "formData",
+            "required": true
+          },
+          {
+            "name": "danhGia",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "hot",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "dangChieu",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "sapChieu",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "thoiLuong",
+            "type": "integer",
+            "default": 120,
+            "minimum": 1,
+            "maximum": 600,
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "File",
+            "type": "file",
+            "description": "PNG/JPEG/WebP; tối đa 5 MB",
+            "in": "formData",
+            "required": false
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "ThemPhimUploadHinh",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim/CapNhatPhimUpload": {
+      "post": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "post_CapNhatPhimUpload",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maPhim",
+            "in": "formData",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "name": "tenPhim",
+            "type": "string",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "trailer",
+            "type": "string",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "moTa",
+            "type": "string",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "maNhom",
+            "type": "string",
+            "default": "GP01",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "ngayKhoiChieu",
+            "type": "string",
+            "description": "dd/MM/yyyy hoặc yyyy-MM-dd",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "danhGia",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "hot",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "dangChieu",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "sapChieu",
+            "type": "boolean",
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "thoiLuong",
+            "type": "integer",
+            "default": 120,
+            "minimum": 1,
+            "maximum": 600,
+            "in": "formData",
+            "required": false
+          },
+          {
+            "name": "File",
+            "type": "file",
+            "description": "PNG/JPEG/WebP; tối đa 5 MB",
+            "in": "formData",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "CapNhatPhimUpload",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim": {
+      "post": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "post_QuanLyPhim",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          },
+          {
+            "name": "tenPhim",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "maNhom",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "QuanLyPhim",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim/XP": {
+      "delete": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "delete_XP",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaPhim",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "XP",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim/XoaPhim": {
+      "delete": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "delete_XoaPhim",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaPhim",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa đăng nhập / token hết hạn"
+          },
+          "403": {
+            "description": "Không có quyền"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "XoaPhim",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/api/QuanLyPhim/LayThongTinPhim": {
+      "get": {
+        "tags": [
+          "QuanLyPhim"
+        ],
+        "operationId": "get_LayThongTinPhim",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaPhim",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinPhim"
+      }
+    },
+    "/api/QuanLyRap/LayThongTinHeThongRap": {
+      "get": {
+        "tags": [
+          "QuanLyRap"
+        ],
+        "operationId": "get_LayThongTinHeThongRap",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maHeThongRap",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinHeThongRap"
+      }
+    },
+    "/api/QuanLyRap/LayThongTinCumRapTheoHeThong": {
+      "get": {
+        "tags": [
+          "QuanLyRap"
+        ],
+        "operationId": "get_LayThongTinCumRapTheoHeThong",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maHeThongRap",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinCumRapTheoHeThong"
+      }
+    },
+    "/api/QuanLyRap/LayThongTinLichChieuHeThongRap": {
+      "get": {
+        "tags": [
+          "QuanLyRap"
+        ],
+        "operationId": "get_LayThongTinLichChieuHeThongRap",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "maHeThongRap",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "maNhom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "default": "GP01"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinLichChieuHeThongRap"
+      }
+    },
+    "/api/QuanLyRap/LayThongTinLichChieuPhim": {
+      "get": {
+        "tags": [
+          "QuanLyRap"
+        ],
+        "operationId": "get_LayThongTinLichChieuPhim",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "MaPhim",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công: {statusCode, message, content, dateTime}"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy dữ liệu"
+          },
+          "409": {
+            "description": "Dữ liệu trùng hoặc xung đột nghiệp vụ"
+          }
+        },
+        "summary": "LayThongTinLichChieuPhim"
+      }
+    }
+  },
+  "definitions": {
+    "DanhSachVeDat": {
+      "type": "object",
+      "properties": {
+        "maLichChieu": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "danhSachVe": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VeVM"
+          }
+        }
+      },
+      "example": {
+        "maLichChieu": 1,
+        "danhSachVe": [
+          {
+            "maGhe": 1,
+            "giaVe": 75000
+          }
+        ]
+      },
+      "required": [
+        "maLichChieu",
+        "danhSachVe"
+      ]
+    },
+    "VeVM": {
+      "type": "object",
+      "properties": {
+        "maGhe": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "giaVe": {
+          "format": "double",
+          "type": "number"
+        }
+      }
+    },
+    "LichChieuInsert": {
+      "type": "object",
+      "properties": {
+        "maPhim": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "ngayChieuGioChieu": {
+          "type": "string"
+        },
+        "maRap": {
+          "type": "string"
+        },
+        "giaVe": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "example": {
+        "maPhim": 1,
+        "maRap": "1",
+        "ngayChieuGioChieu": "20/12/2030 19:00:00",
+        "giaVe": 75000
+      },
+      "required": [
+        "maPhim",
+        "maRap",
+        "ngayChieuGioChieu",
+        "giaVe"
+      ]
+    },
+    "ThongTinDangNhapVM": {
+      "type": "object",
+      "properties": {
+        "taiKhoan": {
+          "type": "string"
+        },
+        "matKhau": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "taiKhoan": "admin",
+        "matKhau": "Xem ADMIN_PASSWORD trong .env"
+      },
+      "required": [
+        "taiKhoan",
+        "matKhau"
+      ]
+    },
+    "NguoiDung_VM": {
+      "type": "object",
+      "properties": {
+        "taiKhoan": {
+          "type": "string"
+        },
+        "matKhau": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "soDt": {
+          "type": "string"
+        },
+        "maNhom": {
+          "type": "string"
+        },
+        "hoTen": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "taiKhoan": "khachhang01",
+        "matKhau": "Movie@123456",
+        "email": "khachhang01@example.com",
+        "soDt": "0901234567",
+        "maNhom": "GP01",
+        "hoTen": "Nguyễn Văn An"
+      },
+      "required": [
+        "taiKhoan",
+        "matKhau",
+        "email",
+        "soDt",
+        "maNhom",
+        "hoTen"
+      ]
+    },
+    "NguoiDungVM": {
+      "type": "object",
+      "properties": {
+        "taiKhoan": {
+          "type": "string"
+        },
+        "matKhau": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "soDt": {
+          "type": "string"
+        },
+        "maNhom": {
+          "type": "string"
+        },
+        "maLoaiNguoiDung": {
+          "type": "string"
+        },
+        "hoTen": {
+          "type": "string"
+        }
+      },
+      "example": {
+        "taiKhoan": "khachhang01",
+        "matKhau": "Movie@123456",
+        "email": "khachhang01@example.com",
+        "soDt": "0901234567",
+        "maNhom": "GP01",
+        "hoTen": "Nguyễn Văn An",
+        "maLoaiNguoiDung": "KhachHang"
+      },
+      "required": [
+        "taiKhoan",
+        "matKhau",
+        "email",
+        "soDt",
+        "maNhom",
+        "hoTen",
+        "maLoaiNguoiDung"
+      ]
+    },
+    "KeyValuePair[String,StringValues]": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "readOnly": true
+        },
+        "value": {
+          "uniqueItems": false,
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "readOnly": true
+        }
+      }
+    }
+  },
+  "basePath": "/",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Bearer <accessToken> nhận từ DangNhap"
+    }
+  }
+}
